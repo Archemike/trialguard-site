@@ -34,7 +34,7 @@
 <header class="nav">
   <a class="brand" href="./"><img src="img/icon-192.png" alt="" width="32" height="32">TrialGuard</a>
   <!-- APP_STORE_URL -->
-  <a class="nav-cta js-appstore" href="https://apps.apple.com/app/id0000000000">Get the app</a>
+  <a class="nav-cta js-appstore" href="https://apps.apple.com/app/id6832402241">Get the app</a>
 </header>
 
 <section class="hero">
@@ -45,7 +45,7 @@
       <p class="lede">TrialGuard reminds you before every trial ends and every bill renews, so you cancel what you don't use and keep what you love.</p>
       <div class="cta-row">
         <!-- APP_STORE_URL -->
-        <a class="badge js-appstore" href="https://apps.apple.com/app/id0000000000" aria-label="Download TrialGuard on the App Store">
+        <a class="badge js-appstore" href="https://apps.apple.com/app/id6832402241" aria-label="Download TrialGuard on the App Store">
           <!-- Swap for Apple's official "Download on the App Store" badge artwork if preferred. -->
           <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path fill="currentColor" d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg>
           <span><small>Download on the</small>App Store</span>
@@ -138,7 +138,7 @@
 <section class="final">
   <h2>Stop paying for things you forgot.</h2>
   <!-- APP_STORE_URL -->
-  <a class="badge js-appstore" href="https://apps.apple.com/app/id0000000000" aria-label="Download TrialGuard on the App Store">
+  <a class="badge js-appstore" href="https://apps.apple.com/app/id6832402241" aria-label="Download TrialGuard on the App Store">
     <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path fill="currentColor" d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg>
     <span><small>Download on the</small>App Store</span>
   </a>
@@ -150,35 +150,47 @@
 </footer>
 
 <script>
-// Pass ad attribution through to the App Store as Apple campaign params (?pt=…&ct=…&mt=8).
-// Runs entirely in the browser: no cookies, no storage, no requests.
+// App Store buttons: "Coming soon" until Apple lists the app, then the real link with
+// ad attribution passed through as Apple campaign params (?pt=…&ct=…&mt=8).
+// No cookies or storage; the only request is Apple's public lookup for the app's listing.
 (function () {
-  // Before launch the App Store ID is a placeholder: show "Coming soon" instead of a dead link.
-  if (document.querySelector('a.js-appstore[href*="id0000000000"]')) {
-    document.querySelectorAll("a.js-appstore").forEach(function (a) {
-      a.removeAttribute("href");
-      a.setAttribute("aria-disabled", "true");
-      a.style.opacity = "0.75";
-      a.style.cursor = "default";
-      a.title = "Coming soon to the App Store";
-      var label = a.querySelector("span");
-      if (label) { label.innerHTML = "<small>Coming soon to the</small>App Store"; }
-      else { a.textContent = "Coming soon"; }
-    });
-    return;
-  }
-  var PROVIDER_TOKEN = "PROVIDER_TOKEN"; // TODO: your App Store Connect provider token (App Analytics › Campaigns)
-  var q = new URLSearchParams(location.search);
-  var ct = [q.get("utm_source"), q.get("utm_campaign")].filter(Boolean).join("-")
-    .replace(/[^\w.-]+/g, "_").slice(0, 40); // Apple caps ct at 40 chars
-  if (!ct) return;
-  document.querySelectorAll("a.js-appstore").forEach(function (a) {
-    var u = new URL(a.href);
-    if (PROVIDER_TOKEN !== "PROVIDER_TOKEN") u.searchParams.set("pt", PROVIDER_TOKEN);
-    u.searchParams.set("ct", ct);
-    u.searchParams.set("mt", "8");
-    a.href = u.toString();
+  var APP_ID = "6832402241";
+  var PROVIDER_TOKEN = "69374800"; // App Store Connect provider ID (pt)
+  var links = document.querySelectorAll("a.js-appstore");
+  var saved = [];
+  links.forEach(function (a) {
+    saved.push({ a: a, href: a.href, html: a.innerHTML });
+    a.removeAttribute("href");
+    a.setAttribute("aria-disabled", "true");
+    a.style.opacity = "0.75";
+    a.style.cursor = "default";
+    a.title = "Coming soon to the App Store";
+    var label = a.querySelector("span");
+    if (label) { label.innerHTML = "<small>Coming soon to the</small>App Store"; }
+    else { a.textContent = "Coming soon"; }
   });
+
+  function goLive() {
+    var q = new URLSearchParams(location.search);
+    var ct = [q.get("utm_source"), q.get("utm_campaign")].filter(Boolean).join("-")
+      .replace(/[^\w.-]+/g, "_").slice(0, 40); // Apple caps ct at 40 chars
+    saved.forEach(function (x) {
+      var u = new URL(x.href);
+      if (ct) { u.searchParams.set("pt", PROVIDER_TOKEN); u.searchParams.set("ct", ct); u.searchParams.set("mt", "8"); }
+      x.a.innerHTML = x.html;
+      x.a.href = u.toString();
+      x.a.removeAttribute("aria-disabled");
+      x.a.removeAttribute("title");
+      x.a.style.opacity = "";
+      x.a.style.cursor = "";
+    });
+  }
+
+  // Apple's lookup API supports JSONP, so this works on a static page without CORS.
+  window.__tgLookup = function (r) { if (r && r.resultCount > 0) goLive(); };
+  var s = document.createElement("script");
+  s.src = "https://itunes.apple.com/lookup?id=" + APP_ID + "&country=us&callback=__tgLookup";
+  document.body.appendChild(s);
 })();
 </script>
 </body>
